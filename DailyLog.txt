@@ -1,0 +1,8 @@
+6/11
+	uart用法：
+	1. 確認pl2303 driver為2008版
+	2. 再MCC加入uart1，勾選enable uart和printf to uart，其他不用動
+	3. 開data visualizer，把terminal source改成com，就可以收到訊號
+	
+	目前什麼功能都沒有，讀取速率就只剩1700hz了
+	主clock如果period選0x1F3F，純跑讀取鍵盤的話可以跑到5000hz

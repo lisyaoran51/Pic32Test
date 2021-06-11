@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>                                  
+  <executable name="dist/default/debug/slave_demo.debug.elf">                 
+    <memory name="program">                 
+      <units>bytes</units>                 
+      <length>66704</length>                 
+      <used>2616</used>                     
+      <free>64088</free>                     
+    </memory>                              
+    <memory name="data">              
+      <units>bytes</units>                 
+      <length>8192</length>                 
+      <used>804</used>                     
+      <free>7388</free>                     
+    </memory>                              
+  </executable>                            
+</project>                                 

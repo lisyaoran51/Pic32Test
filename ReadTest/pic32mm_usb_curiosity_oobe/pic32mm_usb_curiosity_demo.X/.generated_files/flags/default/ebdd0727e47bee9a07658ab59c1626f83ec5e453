@@ -1,0 +1,1 @@
+ $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -fno-common -DSYSTEM_PERIPHERAL_CLOCK=32000000 -I"bsp" -I"usb" -I".." -I"."   -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  D:\½²¨Î¬R\µ{¦¡\Pic32Test\ReadTest\pic32mm_usb_curiosity_oobe\pic32mm_usb_curiosity_demo.X\uart1.c
