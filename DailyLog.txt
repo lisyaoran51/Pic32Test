@@ -6,3 +6,32 @@
 	
 	目前什麼功能都沒有，讀取速率就只剩1700hz了
 	主clock如果period選0x1F3F，純跑讀取鍵盤的話可以跑到5000hz
+	
+	adc還沒測好
+	
+7/26
+	i2c測試
+	read用他的sample code改就好，不過不知道起始和結束位置，可能會掛掉
+	
+	write有兩步驟：
+	收到write時會先跑一次I2C1_SLAVE_RECEIVE_REQUEST_DETECTED，抓好記憶體位置以後才開始抓資料
+	之後會依據master read幾個byte，就跑幾次I2C1_SLAVE_RECEIVED_DATA_DETECTED，去把資料都載下來
+	
+7/29
+	timer1的pr設為0x31F，clock為8Mhz，計算下來每一個tick會是0.0001秒
+	
+	adc不會跑是因為要把conversion clock設到256，acquisition time設到16
+	
+	流程：
+	ADC1_Enable();
+    ADC1_ChannelSelect(channel_AN14);
+	while(1){
+		ADC1_SoftwareTriggerEnable();
+        for(int i=0;i <1000;i++);
+        ADC1_SoftwareTriggerDisable();
+        
+        while(!ADC1_IsConversionComplete(channel_AN14));
+        uint16_t a2 = ADC1_ConversionResultGet(channel_AN14);
+	}
+	
+	
