@@ -78,6 +78,7 @@ unsigned long lastLoopCount = 0;
 
 void setTime(){
     timerCount++;
+    return;
     
     if(!DEBUG) return;
     if(timerCount >> 10 > tempSecond){
@@ -480,7 +481,8 @@ void ReadKeyboard(){
                     pressedKey[pressedNumber] == 3){           // means after release second pad
                 //printf("release [%d] - %d %d at %ds\n", pressedNum, i, j, timerCount);
                 memset(tempCommand, 0x0, 16);
-                sprintf(value, "%03d", 127 + 23 - pressedNumber);
+                //sprintf(value, "%03d", 127 + 23 - pressedNumber);
+                sprintf(value, "%03d", 127 + 150 - (127 + 23 - pressedNumber));
                 strncpy(tempCommand, value, 3);
                 strncat(tempCommand, ",-1", 3);
                 memcpy(i2cWriteData[i2cWriteDataEndPos], tempCommand, 16);
@@ -530,7 +532,8 @@ void ReadKeyboard(){
                 pressedKey[pNum] = 2;
 
                 memset(tempCommand, 0x0, 16);
-                sprintf(value, "%03d", 127 + 23 - pNum);
+                //sprintf(value, "%03d", 127 + 23 - pNum);
+                sprintf(value, "%03d", 127 + 150 - (127 + 23 - pNum));
                 strncpy(tempCommand, value, 3);
                 strncat(tempCommand, ",", 1);
 
@@ -585,6 +588,8 @@ void ReadPedal(){
     
     char tempCommand[16];
     
+    
+    //15 = 0b1111
     IO_RA5_SetValue(15 & 0x1);
     IO_RD1_SetValue(15 & 0x2);
     IO_RC8_SetValue(15 & 0x4);
@@ -592,6 +597,80 @@ void ReadPedal(){
     
     bool inputState3, inputState4, inputState5;
     inputState3 = GetInput(3);
+    inputState4 = GetInput(4);
+    inputState5 = GetInput(5);
+    
+    // speed knob
+    
+    // 0 (no) -> 1 (5) -> 2 (45) -> 3 (4) ->4 (no) counter-clockwise
+    switch(sectionKnobState){
+    case 0:
+        if(inputState4 == 0 && inputState5 != 0){
+            sectionKnobState = 1;
+            debug_print("speed knob forward . %d\n", i2cWriteDataEndPos);
+
+            memset(tempCommand, 0x0, 16);
+            sprintf(tempCommand, "1021,1");
+            memcpy(i2cWriteData[i2cWriteDataEndPos], tempCommand, 16);
+            i2cWriteDataEndPos++;
+            if(i2cWriteDataEndPos == 16)
+                i2cWriteDataEndPos = 0;
+
+        }
+        else if(inputState5 == 0 && inputState4 != 0){
+            sectionKnobState = 2;
+            debug_print("speed knob backward. %d\n", i2cWriteDataEndPos);
+
+            memset(tempCommand, 0x0, 16);
+            sprintf(tempCommand, "1021,-1");
+            memcpy(i2cWriteData[i2cWriteDataEndPos], tempCommand, 16);
+            i2cWriteDataEndPos++;
+            if(i2cWriteDataEndPos == 16)
+                i2cWriteDataEndPos = 0;
+        }
+        break;
+    case 1:
+    case 2:
+            if(inputState4 == 0 && inputState5 == 0){
+                sectionKnobState = 0;
+                debug_print("speed knob floating.\n");
+            }
+            break;
+    }
+    
+    
+    
+    if(inputState3 == 0 && pedalDown != 1){
+        pedalDown = 1;
+        debug_print("Pedal Down.\n");
+
+        memset(tempCommand, 0x0, 16);
+        sprintf(tempCommand, "500,1");
+        memcpy(i2cWriteData[i2cWriteDataEndPos], tempCommand, 16);
+        i2cWriteDataEndPos++;
+        if(i2cWriteDataEndPos == 16)
+            i2cWriteDataEndPos = 0;
+    }
+    
+    if(inputState3 == 1 && pedalDown == 1){
+        pedalDown = 0;
+        debug_print("Pedal Up.\n");
+
+        memset(tempCommand, 0x0, 16);
+        sprintf(tempCommand, "500,0");
+        memcpy(i2cWriteData[i2cWriteDataEndPos], tempCommand, 16);
+        i2cWriteDataEndPos++;
+        if(i2cWriteDataEndPos == 16)
+            i2cWriteDataEndPos = 0;
+    }
+    
+    // section knob
+    // 14 = 0b1110
+    IO_RA5_SetValue(14 & 0x1);
+    //IO_RD1_SetValue(14 & 0x2);
+    //IO_RC8_SetValue(14 & 0x4);
+    //IO_RA15_SetValue(14 & 0x8);
+    
     inputState4 = GetInput(4);
     inputState5 = GetInput(5);
     
@@ -628,31 +707,6 @@ void ReadPedal(){
                 debug_print("section knob floating.\n");
             }
             break;
-    }
-    
-    
-    if(inputState3 == 0 && pedalDown != 1){
-        pedalDown = 1;
-        debug_print("Pedal Down.\n");
-
-        memset(tempCommand, 0x0, 16);
-        sprintf(tempCommand, "500,1");
-        memcpy(i2cWriteData[i2cWriteDataEndPos], tempCommand, 16);
-        i2cWriteDataEndPos++;
-        if(i2cWriteDataEndPos == 16)
-            i2cWriteDataEndPos = 0;
-    }
-    
-    if(inputState3 == 1 && pedalDown == 1){
-        pedalDown = 0;
-        debug_print("Pedal Up.\n");
-
-        memset(tempCommand, 0x0, 16);
-        sprintf(tempCommand, "500,0");
-        memcpy(i2cWriteData[i2cWriteDataEndPos], tempCommand, 16);
-        i2cWriteDataEndPos++;
-        if(i2cWriteDataEndPos == 16)
-            i2cWriteDataEndPos = 0;
     }
     
 }
@@ -734,7 +788,7 @@ void ReadPanel(){
 
                 if(GetInput(j) == 0){
                     if(i ==14 && (j == 4 || j == 5)){
-
+                        if(0)
                         switch(sectionKnobState){
                         case 0:
                             if(GetInput(4) == 0 && GetInput(5) != 0){
@@ -871,90 +925,12 @@ void ReadPanel(){
                                         i2cWriteDataEndPos = 0;
                                 }
                                 break;
-                                    /*
-                            case 4:
-                                    break;
-                                    if(debounceTimerCount + 500 < timerCount){
-                                            isAfterDebounce = 1;
-                                            hasThisSpeedKnobState = 1;
-                                            debounceTimerCount = timerCount;
-                                            if(hasLastSpeedKnobState == 1){
-                                                    break;
-                                            }
-
-                                            printf("Speed knob forward. %d\n", i2cWriteDataEndPos);
-                                            memset(tempCommand, 0x0, 16);
-                                          sprintf(tempCommand, "1021,1");
-                                          memcpy(i2cWriteData[i2cWriteDataEndPos], tempCommand, 16);
-                                          i2cWriteDataEndPos++;
-                                          if(i2cWriteDataEndPos == 16)
-                                                i2cWriteDataEndPos = 0;
-                                    }
-                                    break;
-                            case 5:
-                                    break;
-                                    if(debounceTimerCount + 500 < timerCount){
-                                            isAfterDebounce = 1;
-                                            hasThisSpeedKnobState = 1;
-                                            debounceTimerCount = timerCount;
-                                            if(hasLastSpeedKnobState == 1){
-                                                    break;
-                                            }
-
-                                            printf("Speed knob backward. %d\n", i2cWriteDataEndPos);
-                                            memset(tempCommand, 0x0, 16);
-                                            sprintf(tempCommand, "1021,-1");
-                                            memcpy(i2cWriteData[i2cWriteDataEndPos], tempCommand, 16);
-                                            i2cWriteDataEndPos++;
-                                            if(i2cWriteDataEndPos == 16)
-                                                    i2cWriteDataEndPos = 0;
-                                    }
-                                    break;
-                                    */
+                                   
                             }
                             if(i ==15 && (j == 4 || j == 5)){
-                                /*
-                                // 0 (no) -> 1 (4) -> 2 (5) -> 3 (4off) ->4 (5off)
-                                switch(speedKnobState){
-                                case 0:
-                                        if(GetPin(0, 4) != 0 && GetPin(0, 5) == 0){
-                                                speedKnobState = 1;
-                                                //printf("speed knob forward. %d\n", i2cWriteDataEndPos);
-                                                printf("state 1\n");
-                                        }
-                                        break;
-                                case 1:
-                                        if(GetPin(0, 4) != 0 && GetPin(0, 5) != 0){
-                                                speedKnobState = 2;
-                                                //printf("speed knob forward. %d\n", i2cWriteDataEndPos);
-                                                printf("state 2\n");
-
-                                        }
-                                        else if(GetPin(0, 4) == 0)
-                                                speedKnobState = 0;
-                                        break;
-
-                                case 2:
-                                        if(GetPin(0, 4) == 0 && GetPin(0, 5) != 0){
-                                                speedKnobState = 3;
-                                                printf("state 3\n");
-                                        }
-                                        else if(GetPin(0, 5) == 0)
-                                                speedKnobState = 0;
-                                        break;
-                                case 3:
-                                        if(GetPin(0, 4) == 0 && GetPin(0, 5) == 0){
-                                                speedKnobState = 4;
-                                                printf("speed knob forward.\n");
-                                                speedKnobState = 0;
-                                        }
-                                        else if(GetPin(0, 4) != 0)
-                                                speedKnobState = 0;
-
-                                        break;
-                                }
-                                */
-
+                                
+                                // 0 (no) -> 1 (5) -> 2 (45) -> 3 (4) ->4 (no) counter-clockwise
+                                if(0)
                                 switch(speedKnobState){
                                 case 0:
                                     if(GetInput(4) == 0 && GetInput(5) != 0){
@@ -1566,7 +1542,7 @@ void ProcessAdc(){
             
             
             if((convertedVolume > an9 + 5 || convertedVolume < an9 - 5) ||
-                (convertedVolume == 1 && convertedVolume != an9)){  // cause if volume happens to be 5, it will never become 1
+                (convertedVolume == 0 && convertedVolume != an9)){  // cause if volume happens to be 5, it will never become 1
                 char tempCommand[16] = {0};
                 char value[4] = {0};
                 an9 = (convertedVolume + an9) / 2;
@@ -1575,12 +1551,16 @@ void ProcessAdc(){
 
                 sprintf(tempCommand, "1030,");
                 //strncat(tempCommand, "1030,", 5);
-                if(convertedVolume == 1){
-                    an9 = 1;
+                //if(convertedVolume == 1){
+                //    an9 = 1;
+                //    strncat(tempCommand, "0", 101 - 1);
+                //}
+                if(convertedVolume > 95){
+                    an9 = convertedVolume;
                     strncat(tempCommand, "0", 1);
                 }
                 else{
-                    sprintf(value, "%03d", an9);
+                    sprintf(value, "%03d", 101 - an9);
                     strncat(tempCommand, value, 3);
                 }
                 
@@ -1589,9 +1569,10 @@ void ProcessAdc(){
                 if(i2cWriteDataEndPos == 16)
                     i2cWriteDataEndPos = 0;
 
-                debug_print("%s %s %04d\n",value , tempCommand, an9);
+                debug_print("%d %s %04d\n",convertedVolume , tempCommand, an9);
             }
             
+#if 0
             if(false)
             if(tempAn9 * tempAn9 > an9 + 10000 || tempAn9 * tempAn9 < an9 - 10000){
                 if(tempAn9 * tempAn9 > 10000 || an9 > 10000){
@@ -1614,6 +1595,7 @@ void ProcessAdc(){
                     an9 = tempAn9 * tempAn9;
                 }
             }
+#endif
             adcState = 2;
             break;
             
@@ -1634,7 +1616,7 @@ void ProcessAdc(){
             //debug_print("analog 10 %d %d\n", convertedVolume, tempAn10);
             
             if((convertedVolume > an10 + 5 || convertedVolume < an10 - 5) ||
-                (convertedVolume == 1 && convertedVolume != an10)){  // cause if volume happens to be 5, it will never become 1
+                (convertedVolume == 0 && convertedVolume != an10)){  // cause if volume happens to be 5, it will never become 1
                 char tempCommand[16] = {0};
                 char value[4] = {0};
                 an10 = (convertedVolume + an10) / 2;
@@ -1642,12 +1624,16 @@ void ProcessAdc(){
                 memset(tempCommand, 0x0, 16);
                 sprintf(tempCommand, "1031,");
                 //strncat(tempCommand, "1031,", 5);
-                if(convertedVolume == 1){
-                    an10 = 1;
+                //if(convertedVolume == 1){
+                //    an10 = 1;
+                //    strncat(tempCommand, "0", 1);
+                //}
+                if(convertedVolume > 95){
+                    an10 = convertedVolume;
                     strncat(tempCommand, "0", 1);
                 }
                 else{
-                    sprintf(value, "%03d", an10);
+                    sprintf(value, "%03d", 101 - an10);
                     strncat(tempCommand, value, 3);
                 }
                 
@@ -1656,10 +1642,10 @@ void ProcessAdc(){
                 if(i2cWriteDataEndPos == 16)
                     i2cWriteDataEndPos = 0;
 
-                debug_print("%s %s %04d\n",value , tempCommand, an10);
+                debug_print("%d %s %04d\n",convertedVolume , tempCommand, an10);
             }
             
-            
+#if 0
             if(false)
             if(tempAn10 * tempAn10 > an10 + 10000 || tempAn10 * tempAn10 < an10 - 10000){
                 if(tempAn10 * tempAn10 > 10000 || an10 > 10000){
@@ -1681,6 +1667,7 @@ void ProcessAdc(){
                     an10 = tempAn10 * tempAn10;
                 }
             }
+#endif
             adcState = 4;
             break;
             
@@ -1761,14 +1748,17 @@ void DecodeMessage(char* message){
         return;
 
     if(strcmp(pointer, "RV") == 0){			// RV - Revolve around light ring
+        debug_print("get RV %s \n", message);
         pointer = strtok(NULL, ",");
         value1 = atof(pointer);
         if(value1 > 0)
             SetLightRingEffect(1, value1);
         else if(value1 == 0)
-            SetLightRingEffect(3, value1);	// pause revolving ring
+            //SetLightRingEffect(3, value1);	// pause revolving ring
+            SetLightRingEffect(0, value1);	// turn off
         else
-            SetLightRingEffect(0, value1);	// turn off light ring
+            //SetLightRingEffect(0, value1);	// turn off light ring
+            SetLightRingEffect(1, value1);	// keep revolving
     }
     else if(strcmp(pointer, "BT") == 0){// BT - bluetooth light ring
         pointer = strtok(NULL, ",");
@@ -1859,6 +1849,7 @@ int main(void)
     
     while(0){
         ReadAllDebug();
+        loopCount++;
     }
     /*
     SetIndicatorLights(0,1);
@@ -1873,6 +1864,7 @@ int main(void)
     */
     while(1){
         ReadKeyboard();
+        ReadPedal();
         if(loopCount >> 3 > loopCountDevide8){  // 125hz
             loopCountDevide8 = loopCount >> 3;
             
