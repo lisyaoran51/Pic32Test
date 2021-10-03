@@ -14,7 +14,7 @@
     This header file provides implementations for driver APIs for all modules selected in the GUI.
     Generation Information :
         Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
-        Device            :  PIC32MM0256GPM064
+        Device            :  PIC32MM0064GPM064
     The generated drivers are tested against the following:
         Compiler          :  XC16 v1.61
         MPLAB             :  MPLAB X v5.45
@@ -83,21 +83,20 @@
 #include "pin_manager.h"
 #include "clock.h"
 #include "system.h"
-#include "mccp3_compare.h"
-#include "uart1.h"
-#include "mccp2_compare.h"
 #include "mccp1_compare.h"
-#include "sccp4_compare.h"
+#include "mccp2_compare.h"
+#include "mccp3_compare.h"
 #include "sccp5_compare.h"
+#include "sccp4_compare.h"
+#include "sccp7_compare.h"
+#include "sccp6_compare.h"
+#include "uart1.h"
 #include "tmr1.h"
+#include "adc1.h"
 #include "interrupt_manager.h"
 #include "exceptions.h"
-#include "sccp8_compare.h"
 #include "i2c1.h"
-#include "sccp6_compare.h"
-#include "sccp7_compare.h"
-#include "spi1_driver.h"
-#include "adc1.h"
+#include "sccp8_compare.h"
 
 void SYSTEM_Initialize(void)
 {

@@ -16,7 +16,7 @@
     This source file provides implementations for PIN MANAGER.
     Generation Information :
         Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
-        Device            :  PIC32MM0256GPM064
+        Device            :  PIC32MM0064GPM064
     The generated drivers are tested against the following:
         Compiler          :  XC32 v2.50
         MPLAB 	          :  MPLAB X v5.45
@@ -69,10 +69,10 @@ void PIN_MANAGER_Initialize (void)
     /****************************************************************************
      * Setting the GPIO Direction SFR(s)
      ***************************************************************************/
-    TRISA = 0x69C7;
+    TRISA = 0x69C3;
     TRISB = 0xCFF3;
     TRISC = 0xCEFB;
-    TRISD = 0x0011;
+    TRISD = 0x0010;
 
     /****************************************************************************
      * Setting the Weak Pull Up and Weak Pull Down SFR(s)
@@ -97,7 +97,7 @@ void PIN_MANAGER_Initialize (void)
     /****************************************************************************
      * Setting the Analog/Digital Configuration SFR(s)
      ***************************************************************************/
-    ANSELA = 0x2807;
+    ANSELA = 0x2803;
     ANSELB = 0xC000;
     ANSELC = 0x0003;
 
@@ -107,10 +107,11 @@ void PIN_MANAGER_Initialize (void)
     SYSTEM_RegUnlock(); // unlock PPS
     RPCONbits.IOLOCK = 0;
 
-    RPOR5bits.RP22R = 0x000F;    //RA10->SCCP8:OCM8
     RPOR5bits.RP24R = 0x000E;    //RA9->SCCP7:OCM7
-    RPOR4bits.RP19R = 0x000C;    //RC2->SCCP5:OCM5
     RPOR2bits.RP9R = 0x000B;    //RB3->SCCP4:OCM4
+    RPOR0bits.RP3R = 0x000D;    //RA2->SCCP6:OCM6
+    RPOR5bits.RP22R = 0x000F;    //RA10->SCCP8:OCM8
+    RPOR4bits.RP19R = 0x000C;    //RC2->SCCP5:OCM5
 
     RPCONbits.IOLOCK = 1; // lock   PPS
     SYSTEM_RegLock(); 

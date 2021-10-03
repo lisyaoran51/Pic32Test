@@ -72,3 +72,14 @@
 	
 9/24
 	i2c write pi和read input都改好了，勝spi pwm speed i2c read pi
+	adc設定要設16TCY 4us 2TAD，output integer 32bit
+	
+	不知道為什麼process adc程式寫3個state循環，analog 9就會在最低的時候突然爆很高的數字。改成兩個state循環就不會了
+	disable到下次enable之前，也要留時間間隔。
+	
+	adc換算是先把反指數函數 a*ln(b*x)=y ，x為0~100，y為0~925，代入(x=1,y=0)和(x=100,y=925)，最後可以算出a=200.86119788025397028864712499893，b=1
+	如果要求x時，x=exp(y/200.86119788025397028864712499893)
+	
+9/25
+	遊戲中轉速度旋鈕，會很不穩定，但是用uart debug卻沒有問題
+	

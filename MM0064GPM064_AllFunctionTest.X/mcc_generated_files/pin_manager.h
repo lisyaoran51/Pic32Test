@@ -16,7 +16,7 @@
     This source file provides implementations for PIN MANAGER.
     Generation Information :
         Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
-        Device            :  PIC32MM0256GPM064
+        Device            :  PIC32MM0064GPM064
     The generated drivers are tested against the following:
         Compiler          :  XC32 v2.50
         MPLAB 	          :  MPLAB X v5.45
@@ -1711,11 +1711,11 @@ inline static void IO_RC10_SetValue(bool value)
   @Example
     <code>
     // Set RC13 high (1)
-    SCK1_SetHigh();
+    IO_RC13_SetHigh();
     </code>
 
 */
-#define SCK1_SetHigh()          ( LATCSET = (1 << 13) )
+#define IO_RC13_SetHigh()          ( LATCSET = (1 << 13) )
 /**
   @Summary
     Sets the GPIO pin, RC13, low using LATC13.
@@ -1735,11 +1735,11 @@ inline static void IO_RC10_SetValue(bool value)
   @Example
     <code>
     // Set RC13 low (0)
-    SCK1_SetLow();
+    IO_RC13_SetLow();
     </code>
 
 */
-#define SCK1_SetLow()           ( LATCCLR = (1 << 13) )
+#define IO_RC13_SetLow()           ( LATCCLR = (1 << 13) )
 
 /**
   @Summary
@@ -1760,19 +1760,19 @@ inline static void IO_RC10_SetValue(bool value)
   @Example
     <code>
     // Set RC13 to low.
-    SCK1_SetValue(false);
+    IO_RC13_SetValue(false);
     </code>
 
 */
-inline static void SCK1_SetValue(bool value)
+inline static void IO_RC13_SetValue(bool value)
 {
   if(value)
   {
-    SCK1_SetHigh();
+    IO_RC13_SetHigh();
   }
   else
   {
-    SCK1_SetLow();
+    IO_RC13_SetLow();
   }
 }
 
@@ -1795,11 +1795,11 @@ inline static void SCK1_SetValue(bool value)
   @Example
     <code>
     // Toggle RC13
-    SCK1_Toggle();
+    IO_RC13_Toggle();
     </code>
 
 */
-#define SCK1_Toggle()           ( LATCINV = (1 << 13) )
+#define IO_RC13_Toggle()           ( LATCINV = (1 << 13) )
 /**
   @Summary
     Reads the value of the GPIO pin, RC13.
@@ -1821,11 +1821,11 @@ inline static void SCK1_SetValue(bool value)
     uint16_t portValue;
 
     // Read RC13
-    postValue = SCK1_GetValue();
+    postValue = IO_RC13_GetValue();
     </code>
 
 */
-#define SCK1_GetValue()         PORTCbits.RC13
+#define IO_RC13_GetValue()         PORTCbits.RC13
 /**
   @Summary
     Configures the GPIO pin, RC13, as an input.
@@ -1845,11 +1845,11 @@ inline static void SCK1_SetValue(bool value)
   @Example
     <code>
     // Sets the RC13 as an input
-    SCK1_SetDigitalInput();
+    IO_RC13_SetDigitalInput();
     </code>
 
 */
-#define SCK1_SetDigitalInput()   ( TRISCSET = (1 << 13) )
+#define IO_RC13_SetDigitalInput()   ( TRISCSET = (1 << 13) )
 /**
   @Summary
     Configures the GPIO pin, RC13, as an output.
@@ -1869,11 +1869,11 @@ inline static void SCK1_SetValue(bool value)
   @Example
     <code>
     // Sets the RC13 as an output
-    SCK1_SetDigitalOutput();
+    IO_RC13_SetDigitalOutput();
     </code>
 
 */
-#define SCK1_SetDigitalOutput()   ( TRISCCLR = (1 << 13) )
+#define IO_RC13_SetDigitalOutput()   ( TRISCCLR = (1 << 13) )
 /**
   @Summary
     Sets the GPIO pin, RC14, high using LATC14.
@@ -3332,6 +3332,188 @@ inline static void IO_RC8_SetValue(bool value)
 #define IO_RC8_SetDigitalOutput()   ( TRISCCLR = (1 << 8) )
 /**
   @Summary
+    Sets the GPIO pin, RD0, high using LATD0.
+
+  @Description
+    Sets the GPIO pin, RD0, high using LATD0.
+
+  @Preconditions
+    The RD0 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Set RD0 high (1)
+    IO_RD0_SetHigh();
+    </code>
+
+*/
+#define IO_RD0_SetHigh()          ( LATDSET = (1 << 0) )
+/**
+  @Summary
+    Sets the GPIO pin, RD0, low using LATD0.
+
+  @Description
+    Sets the GPIO pin, RD0, low using LATD0.
+
+  @Preconditions
+    The RD0 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Set RD0 low (0)
+    IO_RD0_SetLow();
+    </code>
+
+*/
+#define IO_RD0_SetLow()           ( LATDCLR = (1 << 0) )
+
+/**
+  @Summary
+    Sets a value to the GPIO pin.
+
+  @Description
+    Sets or Resets the GPIO pin, RD0, low or high using LATD0.
+
+  @Preconditions
+    The RD0 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    bool value; : value to be set to the GPIO pin.
+
+  @Example
+    <code>
+    // Set RD0 to low.
+    IO_RD0_SetValue(false);
+    </code>
+
+*/
+inline static void IO_RD0_SetValue(bool value)
+{
+  if(value)
+  {
+    IO_RD0_SetHigh();
+  }
+  else
+  {
+    IO_RD0_SetLow();
+  }
+}
+
+/**
+  @Summary
+    Toggles the GPIO pin, RD0, using LATD0.
+
+  @Description
+    Toggles the GPIO pin, RD0, using LATD0.
+
+  @Preconditions
+    The RD0 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Toggle RD0
+    IO_RD0_Toggle();
+    </code>
+
+*/
+#define IO_RD0_Toggle()           ( LATDINV = (1 << 0) )
+/**
+  @Summary
+    Reads the value of the GPIO pin, RD0.
+
+  @Description
+    Reads the value of the GPIO pin, RD0.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    uint16_t portValue;
+
+    // Read RD0
+    postValue = IO_RD0_GetValue();
+    </code>
+
+*/
+#define IO_RD0_GetValue()         PORTDbits.RD0
+/**
+  @Summary
+    Configures the GPIO pin, RD0, as an input.
+
+  @Description
+    Configures the GPIO pin, RD0, as an input.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Sets the RD0 as an input
+    IO_RD0_SetDigitalInput();
+    </code>
+
+*/
+#define IO_RD0_SetDigitalInput()   ( TRISDSET = (1 << 0) )
+/**
+  @Summary
+    Configures the GPIO pin, RD0, as an output.
+
+  @Description
+    Configures the GPIO pin, RD0, as an output.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Sets the RD0 as an output
+    IO_RD0_SetDigitalOutput();
+    </code>
+
+*/
+#define IO_RD0_SetDigitalOutput()   ( TRISDCLR = (1 << 0) )
+/**
+  @Summary
     Sets the GPIO pin, RD1, high using LATD1.
 
   @Description
@@ -3694,195 +3876,13 @@ inline static void IO_RD2_SetValue(bool value)
 
 */
 #define IO_RD2_SetDigitalOutput()   ( TRISDCLR = (1 << 2) )
-/**
-  @Summary
-    Sets the GPIO pin, RD4, high using LATD4.
-
-  @Description
-    Sets the GPIO pin, RD4, high using LATD4.
-
-  @Preconditions
-    The RD4 must be set to an output.
-
-  @Returns
-    None.
-
-  @Param
-    None.
-
-  @Example
-    <code>
-    // Set RD4 high (1)
-    SDI1_SetHigh();
-    </code>
-
-*/
-#define SDI1_SetHigh()          ( LATDSET = (1 << 4) )
-/**
-  @Summary
-    Sets the GPIO pin, RD4, low using LATD4.
-
-  @Description
-    Sets the GPIO pin, RD4, low using LATD4.
-
-  @Preconditions
-    The RD4 must be set to an output.
-
-  @Returns
-    None.
-
-  @Param
-    None.
-
-  @Example
-    <code>
-    // Set RD4 low (0)
-    SDI1_SetLow();
-    </code>
-
-*/
-#define SDI1_SetLow()           ( LATDCLR = (1 << 4) )
-
-/**
-  @Summary
-    Sets a value to the GPIO pin.
-
-  @Description
-    Sets or Resets the GPIO pin, RD4, low or high using LATD4.
-
-  @Preconditions
-    The RD4 must be set to an output.
-
-  @Returns
-    None.
-
-  @Param
-    bool value; : value to be set to the GPIO pin.
-
-  @Example
-    <code>
-    // Set RD4 to low.
-    SDI1_SetValue(false);
-    </code>
-
-*/
-inline static void SDI1_SetValue(bool value)
-{
-  if(value)
-  {
-    SDI1_SetHigh();
-  }
-  else
-  {
-    SDI1_SetLow();
-  }
-}
-
-/**
-  @Summary
-    Toggles the GPIO pin, RD4, using LATD4.
-
-  @Description
-    Toggles the GPIO pin, RD4, using LATD4.
-
-  @Preconditions
-    The RD4 must be set to an output.
-
-  @Returns
-    None.
-
-  @Param
-    None.
-
-  @Example
-    <code>
-    // Toggle RD4
-    SDI1_Toggle();
-    </code>
-
-*/
-#define SDI1_Toggle()           ( LATDINV = (1 << 4) )
-/**
-  @Summary
-    Reads the value of the GPIO pin, RD4.
-
-  @Description
-    Reads the value of the GPIO pin, RD4.
-
-  @Preconditions
-    None.
-
-  @Returns
-    None.
-
-  @Param
-    None.
-
-  @Example
-    <code>
-    uint16_t portValue;
-
-    // Read RD4
-    postValue = SDI1_GetValue();
-    </code>
-
-*/
-#define SDI1_GetValue()         PORTDbits.RD4
-/**
-  @Summary
-    Configures the GPIO pin, RD4, as an input.
-
-  @Description
-    Configures the GPIO pin, RD4, as an input.
-
-  @Preconditions
-    None.
-
-  @Returns
-    None.
-
-  @Param
-    None.
-
-  @Example
-    <code>
-    // Sets the RD4 as an input
-    SDI1_SetDigitalInput();
-    </code>
-
-*/
-#define SDI1_SetDigitalInput()   ( TRISDSET = (1 << 4) )
-/**
-  @Summary
-    Configures the GPIO pin, RD4, as an output.
-
-  @Description
-    Configures the GPIO pin, RD4, as an output.
-
-  @Preconditions
-    None.
-
-  @Returns
-    None.
-
-  @Param
-    None.
-
-  @Example
-    <code>
-    // Sets the RD4 as an output
-    SDI1_SetDigitalOutput();
-    </code>
-
-*/
-#define SDI1_SetDigitalOutput()   ( TRISDCLR = (1 << 4) )
 
 /**
     Section: Function Prototypes
 */
 /**
   @Summary
-    Configures the pin settings of the PIC32MM0256GPM064
+    Configures the pin settings of the PIC32MM0064GPM064
     The peripheral pin select, PPS, configuration is also handled by this manager.
 
   @Description

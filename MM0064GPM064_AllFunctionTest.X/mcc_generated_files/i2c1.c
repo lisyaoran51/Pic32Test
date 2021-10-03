@@ -15,7 +15,7 @@
     This header file provides APIs for driver for I2C1.
     Generation Information :
         Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
-        Device            :  PIC32MM0256GPM064
+        Device            :  PIC32MM0064GPM064
     The generated drivers are tested against the following:
         Compiler          :  XC32 v2.50
         MPLAB 	          :  MPLAB X v5.45
@@ -154,8 +154,8 @@ void I2C1_Initialize(void)
     I2C1CON = 0x8000;
     // BCL disabled; P disabled; S disabled; I2COV disabled; IWCOL disabled; 
     I2C1STAT = 0x00;
-    // I2CADD 0; 
-    I2C1_SlaveAddressSet(0x00);
+    // I2CADD 21; 
+    I2C1_SlaveAddressSet(0x15);
     // AMSK 0; 
     I2C1_SlaveAddressMaskSet(0x00);
 
@@ -487,6 +487,7 @@ inline void __attribute__ ((always_inline)) I2C1_ReceiveProcess(void)
          behavior.
 */
 
+#if 0
 static uint8_t i2c1_slaveWriteData = 0xAA;
 
 bool I2C1_StatusCallback(I2C1_SLAVE_DRIVER_STATUS status)
@@ -594,6 +595,6 @@ bool I2C1_StatusCallback(I2C1_SLAVE_DRIVER_STATUS status)
     return true;
 }
 
-
+#endif
 
 

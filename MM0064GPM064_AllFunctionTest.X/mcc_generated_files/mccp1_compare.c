@@ -14,7 +14,7 @@
     This header file provides implementations for driver APIs for MCCP1. 
     Generation Information : 
         Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
-        Device            :  PIC32MM0256GPM064
+        Device            :  PIC32MM0064GPM064
     The generated drivers are tested against the following:
         Compiler          :  XC32 v2.50
         MPLAB             :  MPLAB X v5.45
@@ -77,8 +77,8 @@ void MCCP1_COMPARE_Initialize (void)
     CCP1STAT = 0x00;
     //TMRL 0; TMRH 0; 
     CCP1TMR = 0x00;
-    //PRH 0; PRL 4096; 
-    CCP1PR = 0x1000;
+    //PRH 0; PRL 256; 
+    CCP1PR = 0x100;
     //CMPA 0; 
     CCP1RA = 0x00;
     //CMPB 0; 

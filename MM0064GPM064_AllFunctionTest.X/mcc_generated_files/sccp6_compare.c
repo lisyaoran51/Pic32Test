@@ -14,7 +14,7 @@
     This header file provides implementations for driver APIs for SCCP6. 
     Generation Information : 
         Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
-        Device            :  PIC32MM0256GPM064
+        Device            :  PIC32MM0064GPM064
     The generated drivers are tested against the following:
         Compiler          :  XC32 v2.50
         MPLAB             :  MPLAB X v5.45
@@ -69,8 +69,8 @@ void SCCP6_COMPARE_Initialize (void)
 {
     // ON enabled; MOD Dual Edge Compare, Buffered(PWM); ALTSYNC disabled; SIDL disabled; OPS Each Time Base Period Match; CCPSLP disabled; TMRSYNC disabled; RTRGEN disabled; CCSEL disabled; ONESHOT disabled; TRIGEN disabled; T32 16 Bit; SYNC None; OPSSRC Timer Interrupt Event; TMRPS 1:1; CLKSEL SYSCLK; 
     CCP6CON1 = (0x8005 & 0xFFFF7FFF); //Disabling CCPON bit
-    //ASDGM disabled; ICGSM Level-Sensitive mode; ICS ICM6; SSDG disabled; AUXOUT Disabled; ASDG 0; PWMRSEN disabled; OCAEN disabled; OENSYNC disabled; 
-    CCP6CON2 = 0x00;
+    //ASDGM disabled; ICGSM Level-Sensitive mode; ICS ICM6; SSDG disabled; AUXOUT Disabled; ASDG 0; PWMRSEN disabled; OCAEN enabled; OENSYNC disabled; 
+    CCP6CON2 = 0x1000000;
     //OETRIG disabled; OSCNT None; POLACE disabled; PSSACE Tri-state; 
     CCP6CON3 = 0x00;
     //SCEVT disabled; TRSET disabled; ICOV disabled; ASEVT disabled; ICGARM disabled; RBWIP disabled; TRCLR disabled; RAWIP disabled; TMRHWIP disabled; TMRLWIP disabled; PRLWIP disabled; 

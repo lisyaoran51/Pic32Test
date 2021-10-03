@@ -14,7 +14,7 @@
     This header file provides APIs for driver for TMR1. 
     Generation Information : 
         Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
-        Device            :  PIC32MM0256GPM064
+        Device            :  PIC32MM0064GPM064
     The generated drivers are tested against the following:
         Compiler          :  XC32 v2.50
         MPLAB 	          :  MPLAB X v5.45
@@ -59,7 +59,7 @@
 
 #endif
 
-#define TMR1_INTERRUPT_TICKER_FACTOR    1
+#define TMR1_INTERRUPT_TICKER_FACTOR    10
 
 /**
   Section: Interface Routines

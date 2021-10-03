@@ -15,7 +15,7 @@
     This source file provides APIs for driver for TMR1. 
     Generation Information : 
         Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
-        Device            :  PIC32MM0256GPM064
+        Device            :  PIC32MM0064GPM064
     The generated drivers are tested against the following:
         Compiler          :  XC32 v2.50
         MPLAB 	          :  MPLAB X v5.45
@@ -114,12 +114,19 @@ void __attribute__ ((vector(_TIMER_1_VECTOR), interrupt(IPL1SOFT))) TMR1_ISR()
     /* Check if the Timer Interrupt/Status is set */
 
     //***User Area Begin
+    static volatile unsigned int CountCallBack = 0;
 
-    // ticker function call;
-    // ticker is 1 -> Callback function gets called everytime this ISR executes
-    if(TMR1_InterruptHandler) 
-    { 
-        TMR1_InterruptHandler(); 
+    // callback function - called every 10th pass
+    if (++CountCallBack >= TMR1_INTERRUPT_TICKER_FACTOR)
+    {
+        // ticker function call
+        if(TMR1_InterruptHandler) 
+        { 
+            TMR1_InterruptHandler(); 
+        }
+
+        // reset ticker counter
+        CountCallBack = 0;
     }
 
     //***User Area End

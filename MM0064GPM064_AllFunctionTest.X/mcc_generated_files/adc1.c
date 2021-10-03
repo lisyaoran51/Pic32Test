@@ -14,7 +14,7 @@
     This source file provides APIs for ADC1.
     Generation Information :
         Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
-        Device            :  PIC32MM0256GPM064      
+        Device            :  PIC32MM0064GPM064      
     The generated drivers are tested against the following:
         Compiler          :  XC16 v1.61
         MPLAB 	          :  MPLAB X v5.45
@@ -60,8 +60,8 @@ static void (*ADC1_DefaultInterruptHandler)(void) = NULL;
 
 void ADC1_Initialize (void)
 {
-    // ASAM disabled; DONE disabled; FORM Integer 16-bit; SAMP disabled; SSRC Clearing sample bit ends sampling and starts conversion; SIDL disabled; MODE12 10-bit; ON enabled; 
-    AD1CON1 = 0x8000;
+    // ASAM disabled; DONE disabled; FORM Integer 32-bit; SAMP disabled; SSRC Clearing sample bit ends sampling and starts conversion; SIDL disabled; MODE12 10-bit; ON enabled; 
+    AD1CON1 = 0x8400;
     // CSCNA disabled; BUFM disabled; SMPI Generates interrupt after completion of every sample/conversion operation; OFFCAL disabled; VCFG AVDD/AVSS; BUFREGEN disabled; 
     AD1CON2 = 0x00;
     // SAMC 16; EXTSAM disabled; ADRC PBCLK; ADCS 255; 

@@ -55,7 +55,7 @@
 // https://stackoverflow.com/questions/1644868/define-macro-for-debug-printing-in-c
 
 #ifndef DEBUG
-#define DEBUG 1
+#define DEBUG 0
 #endif
 
 //#define debug_print(fmt, ...) \
@@ -127,8 +127,13 @@ volatile uint8_t readDataLen = 0;
 
 // when first time write to pi, we need to give a byte to know if there is data.
 // 0: no data
-// 80: has data
+// 0x80: has data for first time
+// 0x81: second time write same data
 static bool isFirstWrite = true;
+
+// 1: first write
+// 2: second write
+static uint8_t tempWriteTime = 1;
 uint8_t firstByte = 0x0;
 
 static uint8_t i2c1_slaveWriteData = 0xAA;
@@ -151,7 +156,10 @@ bool I2C1_StatusCallback(I2C1_SLAVE_DRIVER_STATUS status)
                 //debug_print("first write!\n");
                 if(i2cWriteDataEndPos != i2cWriteDataStartPos){
                     // mcu write data to pi and there is data. so put 0x80 to the first byte
-                    firstByte = 0x80;
+                    if(tempWriteTime == 1)
+                        firstByte = 0x80;   // first time send
+                    else if(tempWriteTime == 2)
+                        firstByte = 0x81;   // second time confirm
                     I2C1_ReadPointerSet(&firstByte);
                     isFirstWrite = false;
                     break;
@@ -161,24 +169,34 @@ bool I2C1_StatusCallback(I2C1_SLAVE_DRIVER_STATUS status)
                     firstByte = 0x0;
                     I2C1_ReadPointerSet(&firstByte);
                     isFirstWrite = false;
+                    tempWriteTime = 1;
                     break;
                 }
             }
             else if(writeDataLen == 16 && !isFirstWrite){
+                // mcu write data to pi and there is data. gonna put it twice to confirm. so put 0x81 to the first byte
+                
                 if(i2cWriteDataEndPos != i2cWriteDataStartPos){
-                    
+
                     memcpy(i2cTempWriteBuffer, i2cWriteData[i2cWriteDataStartPos], 16);
-                   
-                    i2cWriteDataStartPos++;
-                    if(i2cWriteDataStartPos == 16)
-                        i2cWriteDataStartPos = 0;
                     
+                    if(tempWriteTime == 1){
+                        tempWriteTime = 2;
+                    }
+                    else if (tempWriteTime == 2){
+                        i2cWriteDataStartPos++;
+                        if(i2cWriteDataStartPos == 16)
+                            i2cWriteDataStartPos = 0;
+                        tempWriteTime = 1;
+                    }
+
                 }
                 else{
                     // ?????????????????????pi?
                     memset(i2cTempWriteBuffer, 0, 16);
                 }
                 writeDataLen = 0;
+                
             }
             
             //I2C1_ReadPointerSet(&i2cWriteData[i2cWriteDataStartPos][writeDataLen++]);
@@ -366,6 +384,7 @@ void ReadAllDebug(){
         for(uint8_t j = 0; j < 8; j++){
             if(GetInput(j) == 0){
                 debug_print("read input %d %d at %ds\n", i, j, timerCount);
+                //for(int k = 0; k < 1000000; k++);
             }
         }
     }
@@ -603,10 +622,10 @@ void ReadPedal(){
     // speed knob
     
     // 0 (no) -> 1 (5) -> 2 (45) -> 3 (4) ->4 (no) counter-clockwise
-    switch(sectionKnobState){
+    switch(speedKnobState){
     case 0:
         if(inputState4 == 0 && inputState5 != 0){
-            sectionKnobState = 1;
+            speedKnobState = 1;
             debug_print("speed knob forward . %d\n", i2cWriteDataEndPos);
 
             memset(tempCommand, 0x0, 16);
@@ -618,7 +637,7 @@ void ReadPedal(){
 
         }
         else if(inputState5 == 0 && inputState4 != 0){
-            sectionKnobState = 2;
+            speedKnobState = 2;
             debug_print("speed knob backward. %d\n", i2cWriteDataEndPos);
 
             memset(tempCommand, 0x0, 16);
@@ -632,7 +651,7 @@ void ReadPedal(){
     case 1:
     case 2:
             if(inputState4 == 0 && inputState5 == 0){
-                sectionKnobState = 0;
+                speedKnobState = 0;
                 debug_print("speed knob floating.\n");
             }
             break;
@@ -787,7 +806,7 @@ void ReadPanel(){
             if(true){
 
                 if(GetInput(j) == 0){
-                    if(i ==14 && (j == 4 || j == 5)){
+                    if(false && i ==14 && (j == 4 || j == 5)){
                         if(0)
                         switch(sectionKnobState){
                         case 0:
@@ -833,7 +852,8 @@ void ReadPanel(){
                                     debug_print("Press Sensitive button.\n");
 
                                     memset(tempCommand, 0x0, 16);
-                                    sprintf(tempCommand, "1002,1");
+                                    //sprintf(tempCommand, "1002,1");
+                                    sprintf(tempCommand, "1001,1");
                                     memcpy(i2cWriteData[i2cWriteDataEndPos], tempCommand, 16);
                                     i2cWriteDataEndPos++;
                                     if(i2cWriteDataEndPos == 16)
@@ -846,7 +866,8 @@ void ReadPanel(){
                                     debug_print("Press Sustain button.\n");
 
                                     memset(tempCommand, 0x0, 16);
-                                    sprintf(tempCommand, "1001,1");
+                                    //sprintf(tempCommand, "1001,1");
+                                    sprintf(tempCommand, "1002,1");
                                     memcpy(i2cWriteData[i2cWriteDataEndPos], tempCommand, 16);
                                     i2cWriteDataEndPos++;
                                     if(i2cWriteDataEndPos == 16)
@@ -992,7 +1013,8 @@ void ReadPanel(){
                                 debug_print("Release Sensitive button.\n");
 
                                 memset(tempCommand, 0x0, 16);
-                                sprintf(tempCommand, "1002,0");
+                                //sprintf(tempCommand, "1002,0");
+                                sprintf(tempCommand, "1001,0");
                                 memcpy(i2cWriteData[i2cWriteDataEndPos], tempCommand, 16);
                                 i2cWriteDataEndPos++;
                                 if(i2cWriteDataEndPos == 16)
@@ -1005,7 +1027,8 @@ void ReadPanel(){
                                 debug_print("Release Sustain button.\n");
 
                                 memset(tempCommand, 0x0, 16);
-                                sprintf(tempCommand, "1001,0");
+                                //sprintf(tempCommand, "1001,0");
+                                sprintf(tempCommand, "1002,0");
                                 memcpy(i2cWriteData[i2cWriteDataEndPos], tempCommand, 16);
                                 i2cWriteDataEndPos++;
                                 if(i2cWriteDataEndPos == 16)
