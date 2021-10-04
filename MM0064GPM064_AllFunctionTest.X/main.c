@@ -1885,6 +1885,10 @@ int main(void)
     SetIndicatorLights(7,1); // speed 5
     SetIndicatorLights(8,1); // speed 5
     */
+    
+    // repeatly revolving light ring
+    SetLightRingEffect(1, -1);
+    
     while(1){
         ReadKeyboard();
         ReadPedal();
