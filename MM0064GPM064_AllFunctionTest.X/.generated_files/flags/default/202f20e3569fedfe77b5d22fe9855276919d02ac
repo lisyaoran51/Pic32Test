@@ -1,0 +1,1 @@
+ $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -fno-common   -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  D:\½²¨Î¬R\µ{¦¡\Pic32Test\MM0064GPM064_AllFunctionTest.X\mcc_generated_files\sccp6_compare.c

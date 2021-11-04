@@ -1889,6 +1889,11 @@ int main(void)
     // repeatly revolving light ring
     SetLightRingEffect(1, -1);
     
+    // turn off all indicator lights and lights up power button led
+    SetIndicatorLights(-1, 0);
+    SetIndicatorLights(0, 1);
+    
+    
     while(1){
         ReadKeyboard();
         ReadPedal();

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<project>                                  
+  <executable name="dist/default/debug/MM0064GPM064_AllFunctionTest.X.debug.elf">                 
+    <memory name="program">                 
+      <units>bytes</units>                 
+      <length>66704</length>                 
+      <used>42980</used>                     
+      <free>23724</free>                     
+    </memory>                              
+    <memory name="data">              
+      <units>bytes</units>                 
+      <length>16896</length>                 
+      <used>2836</used>                     
+      <free>14060</free>                     
+    </memory>                              
+  </executable>                            
+</project>                                 
